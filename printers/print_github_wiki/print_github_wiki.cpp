@@ -1,9 +1,7 @@
-#include "printallregistered.h"
-#include "asdocumenter.h"
 
-#if AS_PRINTABLE == 0
-void PrintAllRegistered(const char *, asDocumenter * , asIScriptEngine *) {};
-#else
+#include "../../src/asdocumenter.h"
+
+#if AS_PRINTABLE == 1
 
 #include <angelscript.h>
 #include <../source/as_objecttype.h>

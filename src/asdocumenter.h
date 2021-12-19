@@ -2,11 +2,14 @@
 #define ASDOCUMENTER_H
 
 //disable to not include strings in final executable.
-#define AS_PRINTABLE 1
+#define AS_PRINTABLE 0
+
+class asIScriptEngine;
 
 #if AS_PRINTABLE
 #include <vector>
 #include <map>
+
 
 class asDocumenter
 {
@@ -118,6 +121,8 @@ private:
 
 #define docOverrideFunc(x, y) doc->OverrideGlobalFunction(x, y)
 
+void PrintAllRegistered(const char * filepath, asDocumenter * doc, asIScriptEngine * engine);
+
 #else
 
 class asDocumenter
@@ -144,6 +149,8 @@ class asDocumenter
 #define docAddNamespace(x)		(void)doc; (void)x
 
 #define docOverrideFunc(x, y) (void)doc; (void)x
+
+inline void PrintAllRegistered(const char *, asDocumenter *, asIScriptEngine *) {}
 
 #endif
 
