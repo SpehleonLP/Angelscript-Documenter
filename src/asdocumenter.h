@@ -59,6 +59,8 @@ typedef std::map<intptr_t, const char *> mapping;
 	inline void AssociateGlobalFunctions(intptr_t typeId, intptr_t first_funcId, intptr_t lastFuncId) { m_globals.push_back({typeId, first_funcId, lastFuncId}); }
 	void RegisterSubtype(intptr_t typeId, intptr_t subtypeId);
 
+	inline void AddPage(const char * title, const char * desc) { m_miscPages.push_back({title, desc}); }
+
 	std::vector<const char *> GetModules();
 	std::vector<intptr_t> GetModuleContents(const char *);
 
@@ -96,6 +98,7 @@ private:
 	std::vector<std::pair<intptr_t, intptr_t>>             m_subTypes;
 	std::vector<std::tuple<intptr_t, intptr_t, intptr_t> > m_globals;
 
+	std::vector<std::pair<const char *, const char *>>		m_miscPages;
 //	mutable std::map<intptr_t, mapping>::iterator last_property{m_propertyDscr.end()};
 };
 
@@ -120,6 +123,7 @@ private:
 #define docAddNamespace(x)	doc->AddSpecialNamespace(x)
 
 #define docOverrideFunc(x, y) doc->OverrideGlobalFunction(x, y)
+#define docAddPage(x, y) doc->AddPage(x, y)
 
 void PrintAllRegistered(const char * filepath, asDocumenter * doc, asIScriptEngine * engine);
 
@@ -149,6 +153,8 @@ class asDocumenter
 #define docAddNamespace(x)		(void)doc; (void)x
 
 #define docOverrideFunc(x, y) (void)doc; (void)x
+#define docAddPage(x, y) (void)doc;
+
 
 inline void PrintAllRegistered(const char *, asDocumenter *, asIScriptEngine *) {}
 
