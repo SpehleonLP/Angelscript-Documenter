@@ -2,7 +2,7 @@
 #define ASDOCUMENTER_H
 
 //disable to not include strings in final executable.
-#define AS_PRINTABLE 0
+#define AS_PRINTABLE 2
 
 class asIScriptEngine;
 
