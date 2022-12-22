@@ -1,7 +1,7 @@
 
 #include "../../src/asdocumenter.h"
 
-#if AS_PRINTABLE == 2
+#if AS_PRINTABLE == 1
 
 #include <angelscript.h>
 #include <../source/as_objecttype.h>
@@ -287,13 +287,17 @@ void PrintDescription(std::ostream & file, std::string const& str)
 	if(str.empty())
 		return;
 
-	for(size_t i = 0, next = str.find_first_of('\n', i); i < str.size(); i = (next+1))
+	for(size_t i = 0, next = str.find_first_of('\n', i); i < str.size(); next = str.find_first_of('\n', i))
 	{
 		std::string substring;
 		if(next == std::string::npos)
 			substring = str.substr(i);
 		else
 			substring = str.substr(i, next - i);
+
+		i = next;
+		while(str[i] == '\n')
+			++i;
 
 		if(substring.size() < 2)
 			continue;
@@ -342,7 +346,7 @@ static bool PrintFactories(std::ofstream & file, asDocumenter * doc, asIScriptEn
 
 	if(N)
 	{
-		file << "/// Factories\n";
+		file << "\n/// Factories\n";
 		did_print = true;
 	}
 
@@ -388,7 +392,7 @@ static bool PrintConstructors(std::ofstream & file, asDocumenter * doc, asIScrip
 		{
 			if(did_print == false)
 			{
-				file << "/// Constructors\n";
+				file << "\n/// Constructors\n";
 				did_print = true;
 			}
 
@@ -399,7 +403,7 @@ static bool PrintConstructors(std::ofstream & file, asDocumenter * doc, asIScrip
 		}
 	}
 
-	PrintGlobalFunctions(file, doc, engine, info, "/// Constructors\n", did_print, false, [=](asIScriptFunction * func)
+	PrintGlobalFunctions(file, doc, engine, info, "\n/// Constructors\n", did_print, false, [=](asIScriptFunction * func)
 	{
 		return (func->GetReturnTypeId() & asTYPEID_MASK_SEQNBR) == info->GetTypeId();
 	});
@@ -467,13 +471,13 @@ static bool PrintMethods(std::vector<kProperty> & properties, std::ofstream & fi
 		if(did_print == false)
 		{
 			did_print = true;
-			file << "/// Methods\n\n";
+			file << "\n/// Methods\n";
 		}
 
 		auto desc =  doc->GetObjectMethod(func->GetId());
 
 		PrintDescription(file, desc);
-		file << '\n' << GetFunctionName(doc, engine, func, false) << ";\n";
+		file << '\t' << GetFunctionName(doc, engine, func, false) << ";\n";
 	}
 
 	return did_print;
@@ -489,9 +493,7 @@ static bool PrintProperties(std::vector<kProperty> && properties, std::ofstream 
 		return strcmp(A.name, B.name) < 0;
 	});*/
 
-	file << "/// Properties\n\n";
-
-
+	file << '\n';
 
 	for(uint32_t i = 0; i < properties.size(); ++i)
 	{
@@ -518,10 +520,8 @@ static bool PrintProperties(std::vector<kProperty> && properties, std::ofstream 
 		if(description_str == nullptr)
 			description_str = doc->GetObjectProperty(info->GetTypeId(),  properties[i].offset);
 
-		if(*description_str)
-			file << "/// " << description_str << "\n";
-
-		file << GetPropertyName(doc, engine, properties[i].name, nullptr, properties[i].type, (properties[i].setter == 0), properties[i].index_type) << ";\n";
+		PrintDescription(file, description_str);
+		file << "\t" << GetPropertyName(doc, engine, properties[i].name, nullptr, properties[i].type, (properties[i].setter == 0), properties[i].index_type) << ";\n";
 	}
 
 	return true;
@@ -534,7 +534,7 @@ static bool PrintEnumeration(std::ofstream & file, asDocumenter * doc, asITypeIn
 
 	if(!N) return false;
 
-	file << "enum " << info->GetName() << " {\n";
+	file << "\nenum " << info->GetName() << " {\n";
 
 	for(asUINT i = 0; i < N; ++i)
 	{
@@ -542,10 +542,8 @@ static bool PrintEnumeration(std::ofstream & file, asDocumenter * doc, asITypeIn
 		const char * name = info->GetEnumValueByIndex(i, &outValue);
 		auto descr = doc->GetEnumValue(typeId, outValue) ;
 
-		if(descr)
-			file << "/// " << descr << "\n";
-
-		file << '\t' << name << " = " << outValue << ",\n";
+		PrintDescription(file, descr);
+		file << '\t' << name << " = 0x" << std::hex << outValue << ",\n";
 	}
 
 	file << "}\n";
@@ -559,15 +557,14 @@ static void PrintTypeInfo(std::ofstream & file, asDocumenter * doc, asIScriptEng
 
 	if(*description_str)
 	{
-		file << "/// Overview\n";
-		file << "/// " << description_str << "\n";
+		PrintDescription(file, description_str);
 	}
 
 	auto globals = doc->GetGlobals(info->GetTypeId());
 
 	if(globals.size())
 	{
-		PrintGlobalFunctions(file, doc, engine, info, "/// Global Functions\n", false, false, [=](asIScriptFunction * func)
+		PrintGlobalFunctions(file, doc, engine, info, "\n/// Global Functions\n", false, false, [=](asIScriptFunction * func)
 		{
 			int type = func->GetReturnTypeId();
 
@@ -624,7 +621,7 @@ static bool PrintNamespace(std::ofstream & file, asDocumenter * doc,  asIScriptE
 	asUINT N;
 
 	if(length)
-		file << "namespace " << NameSpace << " {\n";
+		file << "\nnamespace " << NameSpace << " {\n";
 
 	if((N =  engine->GetObjectTypeCount()))
 	{
@@ -651,7 +648,7 @@ static bool PrintNamespace(std::ofstream & file, asDocumenter * doc,  asIScriptE
 
 			for(auto p : obj_types)
 			{
-				file << "/// " <<  p.second->GetName() << "\n";
+			//	file << "\n/// " <<  p.second->GetName() << "\n";
 				PrintTypeInfo(file, doc, engine, p.second);
 			}
 		}
@@ -671,7 +668,7 @@ static bool PrintNamespace(std::ofstream & file, asDocumenter * doc,  asIScriptE
 				if(!printed)
 				{
 					printed = true;
-					file << "/// Functions\n\n";
+					file << "\n/// Functions\n";
 				}
 
 				if(doc->SilenceFunction(func->GetId()))
@@ -705,7 +702,7 @@ static bool PrintNamespace(std::ofstream & file, asDocumenter * doc,  asIScriptE
 			if(!printed)
 			{
 				printed = true;
-				file << "/// Properties\n\n";
+				file << "\n/// Properties\n";
 			}
 
 			auto prop_desc = doc->GetGlobalProperty((intptr_t)out_pointer);
@@ -737,7 +734,7 @@ static bool PrintNamespace(std::ofstream & file, asDocumenter * doc,  asIScriptE
 	}
 
 	if(length)
-		file << "} ";
+		file << "}\n";
 
 	return file.is_open();
 }
@@ -767,7 +764,7 @@ static void PrintGlobals(std::ofstream & file, asDocumenter * doc,  asIScriptEng
 			if(!printed)
 			{
 				printed = true;
-				file << "/// Properties\n\n";
+				file << "\n/// Properties\n";
 			}
 
 			PrintDescription(file, doc->GetGlobalProperty((intptr_t)out_pointer));
@@ -791,7 +788,7 @@ static void PrintGlobals(std::ofstream & file, asDocumenter * doc,  asIScriptEng
 				if(!printed)
 				{
 					printed = true;
-					file << "/// Functions\n\n";
+					file << "\n/// Functions\n";
 				}
 
 				if(doc->SilenceFunction(func->GetId()))
@@ -848,6 +845,8 @@ void PrintAllRegistered(const char * filepath, asDocumenter * doc, asIScriptEngi
 	}
 
 	file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+
+	file.imbue(std::locale("C"));
 
 	auto modules = doc->GetModules();
 
