@@ -90,7 +90,7 @@ private:
 
 	std::vector<const char *>   m_funcDscr;
 	std::vector<const char *>   m_funcOverride;
-	mapping                     m_typeDscr;
+	mapping                     m_typeDscr;	q
 	mapping                     m_offsetDscr;
 	std::map<intptr_t, mapping> m_propertyDscr;
 
