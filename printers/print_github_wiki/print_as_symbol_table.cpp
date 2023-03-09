@@ -630,9 +630,9 @@ static bool PrintNamespace(std::ofstream & file, asDocumenter * doc,  asIScriptE
 		for(uint32_t i = 0; i < N; ++i)
 		{
 			auto type_info = engine->GetObjectTypeByIndex(i);
-			auto module = doc->GetModule(type_info->GetTypeId());
+			auto _module = doc->GetModule(type_info->GetTypeId());
 
-			if(module && *module == 0 && asDocumenter::insensitiveStrncmpAscii(NameSpace, type_info->GetNamespace(), length) == 0)
+			if(_module && *_module == 0 && asDocumenter::insensitiveStrncmpAscii(NameSpace, type_info->GetNamespace(), length) == 0)
 			{
 				obj_types.emplace_back(type_info->GetName(), type_info);
 			}
@@ -877,15 +877,15 @@ void PrintAllRegistered(const char * filepath, asDocumenter * doc, asIScriptEngi
 	for(asUINT i = 0; i < N; ++i)
 	{
 		auto type_info = engine->GetObjectTypeByIndex(i);
-		auto module = doc->GetModule(type_info->GetTypeId());
+		auto _module = doc->GetModule(type_info->GetTypeId());
 
-		if(module && *module == 0 && !doc->IsSpecialNamespace(type_info->GetNamespace()))
+		if(_module && *_module == 0 && !doc->IsSpecialNamespace(type_info->GetNamespace()))
 		{
 			obj_types.emplace_back(type_info->GetName(), type_info);
 		}
 	}
 
-	file << "/// No module.\n";
+	file << "/// No _module.\n";
 
 	WriteModule(std::move(obj_types), file, doc, engine);
 

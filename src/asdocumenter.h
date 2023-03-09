@@ -55,7 +55,7 @@ typedef std::map<intptr_t, const char *> mapping;
 	inline void RegisterObjectProperty(intptr_t typeId, intptr_t offset, const char * description) { WriteOffset(typeId, offset, description); }
 	inline void RegisterGlobalProperty(intptr_t offset,                  const char * description) { WriteOffset(0,      offset, description); }
 
-	inline void AddToModule(intptr_t typeId, const char * module) { m_modules.push_back({typeId, module}); }
+	inline void AddToModule(intptr_t typeId, const char * _module) { m_modules.push_back({typeId, _module}); }
 	inline void AssociateGlobalFunctions(intptr_t typeId, intptr_t first_funcId, intptr_t lastFuncId) { m_globals.push_back({typeId, first_funcId, lastFuncId}); }
 	void RegisterSubtype(intptr_t typeId, intptr_t subtypeId);
 
