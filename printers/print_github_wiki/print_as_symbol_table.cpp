@@ -282,7 +282,7 @@ static bool HasSetterMethod(asITypeInfo * type_info, int type, const char * name
 	return false;
 }
 
-void PrintDescription(std::ostream & file, std::string const& str)
+void PrintDescription(std::ostream & file, std::string_view str)
 {
 	if(str.empty())
 		return;
