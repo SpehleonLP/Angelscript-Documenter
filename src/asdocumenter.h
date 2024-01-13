@@ -9,6 +9,7 @@ class asIScriptEngine;
 #if AS_PRINTABLE
 #include <vector>
 #include <map>
+#include <cstdint>
 
 
 class asDocumenter
@@ -90,7 +91,7 @@ private:
 
 	std::vector<const char *>   m_funcDscr;
 	std::vector<const char *>   m_funcOverride;
-	mapping                     m_typeDscr;	q
+	mapping                     m_typeDscr;
 	mapping                     m_offsetDscr;
 	std::map<intptr_t, mapping> m_propertyDscr;
 

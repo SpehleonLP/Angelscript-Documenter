@@ -1,7 +1,7 @@
 
 #include "../../src/asdocumenter.h"
 
-#if AS_PRINTABLE == 1
+#if AS_PRINTABLE == 2
 
 #include <angelscript.h>
 #include <../source/as_objecttype.h>
@@ -579,8 +579,6 @@ int GetVaridicLength(asIScriptFunction * func, int i, asUINT n)
 
 		for(asUINT j = i+1; j < n; ++j, ++varidic_length)
 		{
-			const char * name;
-			const char * defaultArg;
 			func->GetParam(i, &type, &flags, &name, &defaultArg);
 
 			if(!(defaultArg != nullptr && type == -1 && flags & asTM_INOUTREF && strcmp(defaultArg, "null") == 0))
