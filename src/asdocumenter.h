@@ -149,6 +149,7 @@ class asDocumenter
 #define docGlobal(x, y)       (void)doc; (void)x
 
 #define docAddToModule(x, y)		(void)doc; (void)x
+#define docRegisterInheritance(x, y)	(void)doc; (void)x; (void)y;
 #define docRegisterSubtype(x, y)	(void)doc; (void)x
 #define docAddGlobals(x, y, z)		(void)doc; (void)x; (void)y
 #define docAddNamespace(x)		(void)doc; (void)x
