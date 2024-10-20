@@ -6,7 +6,7 @@
 
 class asIScriptEngine;
 
-#if AS_PRINTABLE
+#if AS_PRINTABLE > 0
 #include <vector>
 #include <map>
 #include <cstdint>
@@ -130,8 +130,6 @@ private:
 #define docOverrideFunc(x, y) doc->OverrideGlobalFunction(x, y)
 #define docAddPage(x, y) doc->AddPage(x, y)
 
-void PrintAllRegistered(const char * filepath, asDocumenter * doc, asIScriptEngine * engine);
-
 #else
 
 class asDocumenter
@@ -162,10 +160,9 @@ class asDocumenter
 #define docOverrideFunc(x, y) (void)doc; (void)x
 #define docAddPage(x, y) (void)doc;
 
-
-inline void PrintAllRegistered(const char *, asDocumenter *, asIScriptEngine *) {}
-
 #endif
+
+void PrintAllRegistered(const char *, asDocumenter *, asIScriptEngine *);
 
 #endif // ASDOCUMENTER_H
 

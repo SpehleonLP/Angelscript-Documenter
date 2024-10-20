@@ -1,7 +1,12 @@
 
 #include "../../src/asdocumenter.h"
 
-#if AS_PRINTABLE == 1
+
+#if AS_PRINTABLE == 0
+
+void PrintAllRegistered(const char *, asDocumenter *, asIScriptEngine *) {};
+
+#elif AS_PRINTABLE == 1
 
 #include <angelscript.h>
 #include <../source/as_objecttype.h>
@@ -841,7 +846,7 @@ void PrintAllRegistered(const char * filepath, asDocumenter * doc, asIScriptEngi
 
 	if (!file.is_open())
 	{
-		throw std::system_error(errno,  std::system_category(), std::string(filepath) + "_sidebar.md");
+		throw std::system_error(errno,  std::system_category(), std::string(filepath) + "symbol_table.as");
 	}
 
 	file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );

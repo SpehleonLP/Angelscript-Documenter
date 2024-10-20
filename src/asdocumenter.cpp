@@ -3,7 +3,7 @@
 #include <cstring>
 #include <cassert>
 
-#if AS_PRINTABLE
+#if AS_PRINTABLE > 0
 
 void asDocumenter::clear()
 {
