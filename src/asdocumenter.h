@@ -2,7 +2,7 @@
 #define ASDOCUMENTER_H
 
 //disable to not include strings in final executable.
-#define AS_PRINTABLE 0
+#define AS_PRINTABLE 1
 
 class asIScriptEngine;
 
@@ -10,7 +10,6 @@ class asIScriptEngine;
 #include <vector>
 #include <map>
 #include <cstdint>
-
 
 class asDocumenter
 {

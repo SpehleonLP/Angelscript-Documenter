@@ -1,5 +1,6 @@
 #include "asdocumenter.h"
 #include <algorithm>
+#include <cctype>
 #include <cstring>
 #include <cassert>
 
@@ -13,7 +14,7 @@ void asDocumenter::clear()
 	m_propertyDscr.clear();
 }
 
-const char * asDocumenter::ReadTypeId(intptr_t typeId) const
+const char * asDocumenter::ReadTypeId(int typeId) const
 {
 	auto itr = m_typeDscr.find(typeId);
 
@@ -22,12 +23,12 @@ const char * asDocumenter::ReadTypeId(intptr_t typeId) const
 
 	return itr->second;
 }
-void         asDocumenter::WriteTypeId(intptr_t typeId, const char * description)
+void         asDocumenter::WriteTypeId(int typeId, const char * description)
 {
 	m_typeDscr[typeId] = description;
 }
 
-const char * asDocumenter::ReadFunction(intptr_t funcId) const
+const char * asDocumenter::ReadFunction(int funcId) const
 {
 	if((uint64_t)funcId < m_funcDscr.size())
 		return m_funcDscr[funcId];
@@ -35,13 +36,13 @@ const char * asDocumenter::ReadFunction(intptr_t funcId) const
 	return "";
 }
 
-void         asDocumenter::WriteFunction(intptr_t funcId, const char * description)
+void         asDocumenter::WriteFunction(int funcId, const char * description)
 {
-	m_funcDscr.resize(std::max<uintptr_t>(m_funcDscr.size(), funcId+1), "");
+	m_funcDscr.resize(std::max<uint>(m_funcDscr.size(), funcId+1), "");
 	m_funcDscr[funcId] = description;
 }
 
-const char * asDocumenter::ReadOverrideFunction(intptr_t funcId) const
+const char * asDocumenter::ReadOverrideFunction(int funcId) const
 {
 	if((uint64_t)funcId < m_funcOverride.size())
 		return m_funcOverride[funcId]?  m_funcOverride[funcId] : "";
@@ -49,13 +50,13 @@ const char * asDocumenter::ReadOverrideFunction(intptr_t funcId) const
 	return "";
 }
 
-void         asDocumenter::WriteOverrideFunction(intptr_t funcId, const char * description)
+void         asDocumenter::WriteOverrideFunction(int funcId, const char * description)
 {
-	m_funcOverride.resize(std::max<uintptr_t>(m_funcOverride.size(), funcId+1), "");
+	m_funcOverride.resize(std::max<uint>(m_funcOverride.size(), funcId+1), "");
 	m_funcOverride[funcId] = description;
 }
 
-bool asDocumenter::SilenceFunction(intptr_t funcId) const
+bool asDocumenter::SilenceFunction(int funcId) const
 {
 	if((uint64_t)funcId < m_funcOverride.size())
 		return m_funcOverride[funcId]? false : true;
@@ -64,7 +65,7 @@ bool asDocumenter::SilenceFunction(intptr_t funcId) const
 }
 
 
-const char * asDocumenter::ReadOffset(intptr_t typeId, intptr_t offset) const
+const char * asDocumenter::ReadOffset(int typeId, int offset) const
 {
 	auto itr0 = const_cast<asDocumenter*>(this)->m_propertyDscr.find(typeId);
 
@@ -82,7 +83,7 @@ const char * asDocumenter::ReadOffset(intptr_t typeId, intptr_t offset) const
 	return "";
 }
 
-void         asDocumenter::WriteOffset(intptr_t typeId, intptr_t offset, const char * description)
+void         asDocumenter::WriteOffset(int typeId, int offset, const char * description)
 {
 	auto itr0 = const_cast<asDocumenter*>(this)->m_propertyDscr.find(typeId);
 
@@ -92,7 +93,7 @@ void         asDocumenter::WriteOffset(intptr_t typeId, intptr_t offset, const c
 	itr0->second[offset] = description;
 }
 
-void asDocumenter::RegisterSubtype(intptr_t typeId, intptr_t subtypeId)
+void asDocumenter::RegisterSubtype(int typeId, int subtypeId)
 {
 	if(GetParentType(typeId))
 			throw -1;
@@ -126,9 +127,9 @@ std::vector<const char *> asDocumenter::GetModules()
 	return r;
 }
 
-std::vector<intptr_t> asDocumenter::GetModuleContents(const char * m)
+std::vector<int> asDocumenter::GetModuleContents(const char * m)
 {
-	std::vector<intptr_t> r;
+	std::vector<int> r;
 
 	for(auto & p : m_modules)
 	{
@@ -140,9 +141,9 @@ std::vector<intptr_t> asDocumenter::GetModuleContents(const char * m)
 }
 
 
-std::vector<intptr_t> asDocumenter::GetSubTypes(intptr_t typeId)
+std::vector<int> asDocumenter::GetSubTypes(int typeId)
 {
-	std::vector<intptr_t> r;
+	std::vector<int> r;
 
 	for(auto & p : m_subTypes)
 	{
@@ -153,7 +154,7 @@ std::vector<intptr_t> asDocumenter::GetSubTypes(intptr_t typeId)
 	return r;
 }
 
-const char *		  asDocumenter::GetModule(intptr_t typeId)
+const char *		  asDocumenter::GetModule(int typeId)
 {
 	for(auto & p : m_modules)
 	{
@@ -164,9 +165,9 @@ const char *		  asDocumenter::GetModule(intptr_t typeId)
 	return "";
 }
 
-std::vector<std::pair<intptr_t, intptr_t>> asDocumenter::GetGlobals(intptr_t k)
+std::vector<std::pair<int, int>> asDocumenter::GetGlobals(int k)
 {
-	std::vector<std::pair<intptr_t, intptr_t>>  r;
+	std::vector<std::pair<int, int>>  r;
 
 	for(auto & p : m_globals)
 	{
@@ -179,7 +180,7 @@ std::vector<std::pair<intptr_t, intptr_t>> asDocumenter::GetGlobals(intptr_t k)
 	return r;
 }
 
-bool				  asDocumenter::IsGlobalAssociated(intptr_t k)
+bool				  asDocumenter::IsGlobalAssociated(int k)
 {
 	for(auto & p : m_globals)
 	{
@@ -192,7 +193,7 @@ bool				  asDocumenter::IsGlobalAssociated(intptr_t k)
 	return false;
 }
 
-int64_t asDocumenter::GetParentType(intptr_t typeId)
+int64_t asDocumenter::GetParentType(int typeId)
 {
 	for(auto & p : m_subTypes)
 	{
