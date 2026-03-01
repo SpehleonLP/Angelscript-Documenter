@@ -300,9 +300,10 @@ void PrintDescription(std::ostream & file, std::string const& str)
 		else
 			substring = str.substr(i, next - i);
 
-		i = next;
-		while(str[i] == '\n')
-			++i;
+		if(next == std::string::npos)
+			i = str.size();
+		else
+			i = next + 1;
 
 		if(substring.size() < 2)
 			continue;
